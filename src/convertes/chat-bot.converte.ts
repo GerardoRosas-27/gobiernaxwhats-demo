@@ -19,6 +19,7 @@ export function converteModelToInterfaceImageButtons(data: ChatBotModel): SendIm
 
         }
     }
+
     if (!data.text.body) {
         delete converteData.text;
     }

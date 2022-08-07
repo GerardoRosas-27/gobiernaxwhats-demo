@@ -67,7 +67,7 @@ export interface SendImageButtonsInterface {
     type: string;
     text?: {
         body: string;
-    }
+    };
     interactive?: {
         type: string;
         header?: DataMessageInterface;

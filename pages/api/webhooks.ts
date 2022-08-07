@@ -78,7 +78,7 @@ const requestUser = async (data: ReqValue, res: NextApiResponse<string>) => {
         let chatIdInputNext = dataMessageBd[0].input?.id ? dataMessageBd[0].input?.id : '';
         if (chatIdInputNext.length > 0) {
           let dataMessageNextBd = await searchChatBot(chatIdInputNext);
-          sendMessage(chatId, from, dataMessageNextBd[0], dataFlow, res);
+          sendMessage(chatIdInputNext, from, dataMessageNextBd[0], dataFlow, res);
         } else {
           res.status(200).send("error")
         }
@@ -135,7 +135,10 @@ const sendMessage = async (chatId: string, from: string, dataMessageBd: ChatBotM
   console.log("send data: ", JSON.stringify(resDataMessage))
   let response: ResGeneralApi = await apiSendMessage(resDataMessage);
   if (!response.error) {
-
+    if (dataMessageBd.trigger && dataMessageBd.trigger.length > 0) {
+      let dataMessageNextBd = await searchChatBot(dataMessageBd.trigger);
+      sendMessage(dataMessageBd.trigger, from, dataMessageNextBd[0], dataFlow, res)
+    }
     let saveDataFlow: FlowChatBotModel = {
       user_phone: response.data?.contacts[0].input ? response.data?.contacts[0].input : "",
       wa_id: response.data?.contacts[0].wa_id ? response.data?.contacts[0].wa_id : "",
@@ -150,14 +153,12 @@ const sendMessage = async (chatId: string, from: string, dataMessageBd: ChatBotM
       createFlowChatBot(saveDataFlow);
     }
     console.log("mensaje enviado");
+
     res.status(200).send("ok")
   } else {
     res.status(200).send("error")
   }
 }
-const sentMessageTrigger = () =>{
-//falta mandar mensaje trigger
-  //sendMessage(chatId: string, from: string, dataMessageBd: ChatBotModel, dataFlow: FlowChatBotModel[], res: NextApiResponse<string>)
-}
+
 
 
