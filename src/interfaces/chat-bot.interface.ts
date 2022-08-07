@@ -5,16 +5,7 @@ export interface ButtonsInterface {
         title: string;
     }
 }
-interface RowsInterface {
-    id: string;
-    title: string;
-    description: string;
-}
 
-export interface ListInterface {
-    title: string;
-    rows: RowsInterface[];
-}
 export interface ItemMessageInterface {
     body?: string;
     link?: string;
@@ -59,6 +50,19 @@ export interface SendTextInterface {
     type: string;
     text: { body: string };
 }
+
+export interface RowsInterface {
+    id: string;
+    title: string;
+    description: string;
+}
+
+export interface ListInterface {
+    title: string;
+    rows: RowsInterface[];
+}
+
+
 export interface SendImageButtonsInterface {
     type: string;
     text?: {
@@ -70,7 +74,9 @@ export interface SendImageButtonsInterface {
         body?: DataMessageInterface;
         footer?: DataMessageInterface;
         action: {
-            buttons: ButtonsInterface[];
+            buttons?: ButtonsInterface[];
+            sections?: ListInterface[];
         }
+        
     };
 }

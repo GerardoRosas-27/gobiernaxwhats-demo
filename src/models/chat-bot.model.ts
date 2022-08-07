@@ -6,7 +6,7 @@ export interface ButtonsModel {
         title: string;
     }
 }
-interface RowsMolde {
+export interface RowsModel {
     id: string;
     title: string;
     description: string;
@@ -15,7 +15,7 @@ interface RowsMolde {
 export interface ListModel {
     _id?: string;
     title: string;
-    rows: RowsMolde[];
+    rows: RowsModel[];
 }
 export interface ItemMessageModel {
     body?: string;

@@ -98,6 +98,11 @@ export interface ReqUserMessages {
         button_reply: {
             id: string;
             title: string;
+        },
+        list_reply: {
+            id: string;
+            title: string;
+            description: string;
         }
     }
 }

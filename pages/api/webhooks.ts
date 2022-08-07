@@ -88,11 +88,17 @@ const requestUser = async (data: ReqValue, res: NextApiResponse<string>) => {
       break;
     case TypeInputUser.interactive:
       if (dataFlow && dataFlow?.length > 0) {
-        let chatIdButtonNext = data.messages && data.messages[0].interactive?.button_reply.id ? data.messages[0].interactive?.button_reply.id : '';
-        //let chatIdListNext = data.messages && data.messages[0].interactive?.button_reply.id ? data.messages[0].interactive?.button_reply.id : '';
+        let chatIdButtonNext = data.messages && data.messages[0].interactive && data.messages[0].interactive?.button_reply && data.messages[0].interactive?.button_reply.id ? data.messages[0].interactive?.button_reply.id : '';
+        let chatIdListNext = data.messages && data.messages[0].interactive && data.messages[0].interactive?.list_reply && data.messages[0].interactive?.list_reply.id ? data.messages[0].interactive?.list_reply.id : '';
         if (chatIdButtonNext.length > 0) {
           let dataMessageNextBd = await searchChatBot(chatIdButtonNext);
           sendMessage(chatIdButtonNext, from, dataMessageNextBd[0], dataFlow, res);
+        } else {
+          res.status(200).send("error")
+        }
+        if (chatIdListNext.length > 0) {
+          let dataMessageNextBd = await searchChatBot(chatIdListNext);
+          sendMessage(chatIdListNext, from, dataMessageNextBd[0], dataFlow, res);
         } else {
           res.status(200).send("error")
         }
@@ -148,6 +154,10 @@ const sendMessage = async (chatId: string, from: string, dataMessageBd: ChatBotM
   } else {
     res.status(200).send("error")
   }
+}
+const sentMessageTrigger = () =>{
+//falta mandar mensaje trigger
+  //sendMessage(chatId: string, from: string, dataMessageBd: ChatBotModel, dataFlow: FlowChatBotModel[], res: NextApiResponse<string>)
 }
 
 

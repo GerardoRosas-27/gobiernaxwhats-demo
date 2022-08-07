@@ -1,5 +1,5 @@
-import { ButtonsInterface, DataMessageInterface, SendImageButtonsInterface } from "../interfaces/chat-bot.interface";
-import { ButtonsModel, ChatBotModel, DataMessageModel } from "../models/chat-bot.model";
+import { ButtonsInterface, DataMessageInterface, ListInterface, RowsInterface, SendImageButtonsInterface } from "../interfaces/chat-bot.interface";
+import { ButtonsModel, ChatBotModel, DataMessageModel, ListModel, RowsModel } from "../models/chat-bot.model";
 
 export function converteModelToInterfaceImageButtons(data: ChatBotModel): SendImageButtonsInterface {
     let converteData: SendImageButtonsInterface = {
@@ -9,28 +9,35 @@ export function converteModelToInterfaceImageButtons(data: ChatBotModel): SendIm
         },
         interactive: {
             type: data.interactive?.type as string,
-            header: itemDocument(data?.interactive && data?.interactive.header),
-            body: itemDocument(data.interactive && data.interactive?.body),
-            footer: itemDocument(data.interactive && data.interactive?.footer),
+            header: mapItemDocument(data?.interactive && data?.interactive.header),
+            body: mapItemDocument(data.interactive && data.interactive?.body),
+            footer: mapItemDocument(data.interactive && data.interactive?.footer),
             action: {
-                buttons: data.interactive?.action?.buttons ? itemsButtons(data.interactive?.action?.buttons) : []
-            }
+                buttons: data.interactive?.action?.buttons && data.interactive?.action?.buttons?.length > 0 ? itemsButtons(data.interactive?.action?.buttons) : [],
+                sections: data.interactive?.action?.sections && data.interactive?.action?.sections.length > 0 ? mapListItems(data.interactive?.action?.sections) : []
+            },
+
         }
     }
     if (!data.text.body) {
         delete converteData.text;
     }
-    if (data.interactive?.action?.buttons?.length === 0) {
-        delete converteData.interactive;
+    if ((data.interactive?.action?.buttons && data.interactive?.action?.buttons?.length === 0) && (data.interactive?.action?.buttons && data.interactive?.action?.sections && data.interactive?.action?.sections.length === 0)) {
+        delete converteData.interactive
+    } else {
+        if (data.interactive?.action?.buttons && data.interactive?.action?.buttons?.length === 0) {
+            delete converteData.interactive?.action.buttons
+        }
+        if (data.interactive?.action?.sections && data.interactive?.action?.sections?.length === 0) {
+            delete converteData.interactive?.action.sections
+        }
     }
-
-    data.text.body ? null : delete converteData.text;
     return converteData
 }
 
 
 
-const itemDocument = (data: DataMessageModel | undefined): DataMessageInterface | undefined => {
+const mapItemDocument = (data: DataMessageModel | undefined): DataMessageInterface | undefined => {
     if (data) {
         let item: DataMessageInterface = {
             type: data.type,
@@ -66,5 +73,25 @@ const itemsButtons = (data: ButtonsModel[]): ButtonsInterface[] => {
             }
         }
     })
+    return items
+}
+const mapListItems = (data: ListModel[]): ListInterface[] => {
+    let items: ListInterface[] = data.map(item => {
+        return {
+            title: item.title,
+            rows: mapRowsItems(item.rows)
+        }
+    });
+    return items
+}
+
+const mapRowsItems = (data: RowsModel[]): RowsInterface[] => {
+    let items: RowsInterface[] = data.map(item => {
+        return {
+            id: item.id,
+            title: item.title,
+            description: item.description
+        }
+    });
     return items
 }
