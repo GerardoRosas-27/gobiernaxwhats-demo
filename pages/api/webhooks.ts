@@ -71,7 +71,6 @@ const requestUser = async (data: ReqValue, res: NextApiResponse<string>) => {
   }
   let dataMessageBd = await searchChatBot(chatId);
 
-
   switch (typeMessage) {
     case TypeInputUser.text:
       if (dataFlow && dataFlow?.length > 0) {
@@ -116,6 +115,7 @@ const requestUser = async (data: ReqValue, res: NextApiResponse<string>) => {
 
 const sendMessage = async (chatId: string, from: string, dataMessageBd: ChatBotModel, dataFlow: FlowChatBotModel[], res: NextApiResponse<string>) => {
   let dataMessage = await converteModelToInterfaceImageButtons(dataMessageBd);
+  console.log("converte data: ", JSON.stringify(dataMessage));
   let fromSub = '';
   if (dataFlow?.length > 0) {
     fromSub = dataFlow[0].user_phone;
@@ -136,8 +136,9 @@ const sendMessage = async (chatId: string, from: string, dataMessageBd: ChatBotM
   let response: ResGeneralApi = await apiSendMessage(resDataMessage);
   if (!response.error) {
     if (dataMessageBd.trigger && dataMessageBd.trigger.length > 0) {
-      let dataMessageNextBd = await searchChatBot(dataMessageBd.trigger);
-      sendMessage(dataMessageBd.trigger, from, dataMessageNextBd[0], dataFlow, res)
+      chatId = dataMessageBd.trigger;
+      let dataMessageNextBd = await searchChatBot(chatId);
+      sendMessage(chatId, from, dataMessageNextBd[0], dataFlow, res)
     }
     let saveDataFlow: FlowChatBotModel = {
       user_phone: response.data?.contacts[0].input ? response.data?.contacts[0].input : "",

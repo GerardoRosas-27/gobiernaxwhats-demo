@@ -74,6 +74,7 @@ export interface SendImageButtonsInterface {
         body?: DataMessageInterface;
         footer?: DataMessageInterface;
         action: {
+            button?: string;
             buttons?: ButtonsInterface[];
             sections?: ListInterface[];
         }

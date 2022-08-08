@@ -13,6 +13,7 @@ export function converteModelToInterfaceImageButtons(data: ChatBotModel): SendIm
             body: mapItemDocument(data.interactive && data.interactive?.body),
             footer: mapItemDocument(data.interactive && data.interactive?.footer),
             action: {
+                button: data.interactive?.action?.button ? data.interactive?.action?.button : '',
                 buttons: data.interactive?.action?.buttons && data.interactive?.action?.buttons?.length > 0 ? itemsButtons(data.interactive?.action?.buttons) : [],
                 sections: data.interactive?.action?.sections && data.interactive?.action?.sections.length > 0 ? mapListItems(data.interactive?.action?.sections) : []
             },
@@ -32,6 +33,9 @@ export function converteModelToInterfaceImageButtons(data: ChatBotModel): SendIm
         if (data.interactive?.action?.sections && data.interactive?.action?.sections?.length === 0) {
             delete converteData.interactive?.action.sections
         }
+    }
+    if (!data.interactive?.action?.button) {
+        delete converteData.interactive?.action?.button;
     }
     return converteData
 }
