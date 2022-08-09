@@ -38,3 +38,21 @@ export interface ResGeneralApi{
     error?: ResponseError;
 }
 
+export interface ResErrorUrlImg {
+    message: string;
+    type: string;
+    code: number;
+    error_subcode: number;
+    fbtrace_id: string;
+}
+
+export interface ResUrlImage{
+    url?: string;
+    mime_type?: string;
+    sha256?: string;
+    file_size?: number;
+    id?: string;
+    messaging_product?: string;
+    error?: ResErrorUrlImg
+}
+

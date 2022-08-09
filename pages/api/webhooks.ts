@@ -100,6 +100,11 @@ const requestUser = async (data: ReqValue) => {
         await sendMessage(chatId, from, dataMessageBd[0], dataFlow);
       }
       break;
+    case TypeInputUser.image:
+
+      console.log("data image: ", data.messages && data.messages[0]);
+
+      break;
     default:
 
       break;
