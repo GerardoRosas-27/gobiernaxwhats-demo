@@ -31,33 +31,34 @@ export default async function webhooks(
         ) {
           let response = req.query['hub.challenge'] as string
           res.setHeader('content-type', "text/plain");
-          res.status(200).send(response);
+          return res.status(200).send(response);
         } else {
           res.setHeader('content-type', "text/plain");
-          res.status(400).send("token invalido");
+          return res.status(400).send("token invalido");
         }
 
         break;
 
       case 'POST':
+        res.setHeader('content-type', "application/json");
         let request: ReqWebhooks = req.body;
         let data = request.entry[0].changes[0].value;
         if (data.messages && data.contacts) {
-          requestUser(data, res)
-        } else {
-          res.status(200).send("OK");
+          await requestUser(data);
         }
+        return res.status(200).send("success ok");
         break;
       default:
-        res.status(404).send("not metho service");
+        return res.status(200).send("not metho service");
         break;
     }
+
   } catch (error) {
-    res.status(200).send("Error Servidos");
+    return res.status(200).send("Error Servidos");
   }
 
 }
-const requestUser = async (data: ReqValue, res: NextApiResponse<string>) => {
+const requestUser = async (data: ReqValue) => {
   let typeMessage = data.messages && data.messages[0].type;
   let from = data.messages && data.messages[0].from.length > 0 ? data.messages[0].from : '';
   let wa_id = data.contacts && data.contacts[0].wa_id;
@@ -77,12 +78,10 @@ const requestUser = async (data: ReqValue, res: NextApiResponse<string>) => {
         let chatIdInputNext = dataMessageBd[0].input?.id ? dataMessageBd[0].input?.id : '';
         if (chatIdInputNext.length > 0) {
           let dataMessageNextBd = await searchChatBot(chatIdInputNext);
-          sendMessage(chatIdInputNext, from, dataMessageNextBd[0], dataFlow, res);
-        } else {
-          res.status(200).send("error")
+          await sendMessage(chatIdInputNext, from, dataMessageNextBd[0], dataFlow);
         }
       } else {
-        sendMessage(chatId, from, dataMessageBd[0], dataFlow, res);
+        await sendMessage(chatId, from, dataMessageBd[0], dataFlow);
       }
       break;
     case TypeInputUser.interactive:
@@ -91,29 +90,24 @@ const requestUser = async (data: ReqValue, res: NextApiResponse<string>) => {
         let chatIdListNext = data.messages && data.messages[0].interactive && data.messages[0].interactive?.list_reply && data.messages[0].interactive?.list_reply.id ? data.messages[0].interactive?.list_reply.id : '';
         if (chatIdButtonNext.length > 0) {
           let dataMessageNextBd = await searchChatBot(chatIdButtonNext);
-          sendMessage(chatIdButtonNext, from, dataMessageNextBd[0], dataFlow, res);
-        } else {
-          res.status(200).send("error")
+          await sendMessage(chatIdButtonNext, from, dataMessageNextBd[0], dataFlow);
         }
         if (chatIdListNext.length > 0) {
           let dataMessageNextBd = await searchChatBot(chatIdListNext);
-          sendMessage(chatIdListNext, from, dataMessageNextBd[0], dataFlow, res);
-        } else {
-          res.status(200).send("error")
+          await sendMessage(chatIdListNext, from, dataMessageNextBd[0], dataFlow);
         }
-
       } else {
-        sendMessage(chatId, from, dataMessageBd[0], dataFlow, res);
+        await sendMessage(chatId, from, dataMessageBd[0], dataFlow);
       }
       break;
-
     default:
-      res.status(200).send("error")
+
       break;
   }
+  return
 }
 
-const sendMessage = async (chatId: string, from: string, dataMessageBd: ChatBotModel, dataFlow: FlowChatBotModel[], res: NextApiResponse<string>) => {
+const sendMessage = async (chatId: string, from: string, dataMessageBd: ChatBotModel, dataFlow: FlowChatBotModel[]) => {
   let dataMessage = await converteModelToInterfaceImageButtons(dataMessageBd);
   console.log("converte data: ", JSON.stringify(dataMessage));
   let fromSub = '';
@@ -138,7 +132,7 @@ const sendMessage = async (chatId: string, from: string, dataMessageBd: ChatBotM
     if (dataMessageBd.trigger && dataMessageBd.trigger.length > 0) {
       chatId = dataMessageBd.trigger;
       let dataMessageNextBd = await searchChatBot(chatId);
-      sendMessage(chatId, from, dataMessageNextBd[0], dataFlow, res)
+      sendMessage(chatId, from, dataMessageNextBd[0], dataFlow)
     }
     let saveDataFlow: FlowChatBotModel = {
       user_phone: response.data?.contacts[0].input ? response.data?.contacts[0].input : "",
@@ -154,11 +148,8 @@ const sendMessage = async (chatId: string, from: string, dataMessageBd: ChatBotM
       createFlowChatBot(saveDataFlow);
     }
     console.log("mensaje enviado");
-
-    res.status(200).send("ok")
-  } else {
-    res.status(200).send("error")
   }
+  return
 }
 
 
