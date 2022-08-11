@@ -4,4 +4,5 @@ export const TypeInputUser = {
     image: "image",
     document: "document",
     video: "video",
+    location: "location"
 }
