@@ -1,4 +1,5 @@
 export interface DataMessageModel{
+    _id?: string;
     user_id: string;
     chat_id: string;
     caption?: string;
@@ -10,7 +11,7 @@ export interface DataMessageModel{
     voice?: boolean;
     url_serve: string;
     location?: {
-        latitude: number;
-        longitude: number;
+        latitude: string;
+        longitude: string;
     }
 }

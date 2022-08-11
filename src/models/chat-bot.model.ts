@@ -53,6 +53,16 @@ export interface ChatBotModel {
             sections?: ListModel[];
         }
     };
+    media?: {
+        type: string;
+        title: string;
+        id: string;
+    },
+    location?: {
+        latitude: string;
+        longitude: string;
+        id: string;
+    }
     input?: {
         title: string;
         id: string;

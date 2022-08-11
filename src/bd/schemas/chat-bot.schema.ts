@@ -27,6 +27,16 @@ let chatBot = new Schema<ChatBotModel>({
         title: { type: String, required: false },
         id: { type: String, required: false },
     },
+    media: {
+        type: { type: String, required: false },
+        title: { type: String, required: false },
+        id: { type: String, required: false }
+    },
+    location: {
+        latitude: { type: String, required: false },
+        longitude: { type: String, required: false },
+        id: { type: String, required: false },
+    },
     type: { type: String, required: true },
     text: { body: { type: String, required: false } },
     image: {

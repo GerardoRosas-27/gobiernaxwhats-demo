@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { converteModelToInterfaceImageButtons } from '../../src/convertes/chat-bot.converte';
+import { converteModelToInterfaceChatBot } from '../../src/convertes/chat-bot.converte';
 import { TypeInputUser } from '../../src/environment/var-const';
 import { ResGeneralApi, ResMessage, ResponseError } from '../../src/interfaces/api-whatsapp';
 import { ReqValue, ReqWebhooks } from '../../src/interfaces/webhooks';
@@ -113,7 +113,7 @@ const requestUser = async (data: ReqValue) => {
 }
 
 const sendMessage = async (chatId: string, from: string, dataMessageBd: ChatBotModel, dataFlow: FlowChatBotModel[]) => {
-  let dataMessage = await converteModelToInterfaceImageButtons(dataMessageBd);
+  let dataMessage = await converteModelToInterfaceChatBot(dataMessageBd);
   console.log("converte data: ", JSON.stringify(dataMessage));
   let fromSub = '';
   if (dataFlow?.length > 0) {

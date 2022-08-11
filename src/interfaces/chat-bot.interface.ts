@@ -41,6 +41,20 @@ export interface ChatBotInterface {
             sections?: ListInterface[];
         }
     };
+    media?: {
+        type: string;
+        title: string;
+        id: string;
+    };
+    location?: {
+        latitude: string;
+        longitude: string;
+        id: string;
+    };
+    input?: {
+        title: string;
+        id: string;
+    };
     name?: string;
     productAll?: string;
     productList?: string[];
@@ -63,7 +77,7 @@ export interface ListInterface {
 }
 
 
-export interface SendImageButtonsInterface {
+export interface SendChatBotInterface {
     type: string;
     text?: {
         body: string;
@@ -78,6 +92,6 @@ export interface SendImageButtonsInterface {
             buttons?: ButtonsInterface[];
             sections?: ListInterface[];
         }
-        
+
     };
 }

@@ -1,8 +1,8 @@
-import { ButtonsInterface, DataMessageInterface, ListInterface, RowsInterface, SendImageButtonsInterface } from "../interfaces/chat-bot.interface";
+import { ButtonsInterface, DataMessageInterface, ListInterface, RowsInterface, SendChatBotInterface } from "../interfaces/chat-bot.interface";
 import { ButtonsModel, ChatBotModel, DataMessageModel, ListModel, RowsModel } from "../models/chat-bot.model";
 
-export function converteModelToInterfaceImageButtons(data: ChatBotModel): SendImageButtonsInterface {
-    let converteData: SendImageButtonsInterface = {
+export function converteModelToInterfaceChatBot(data: ChatBotModel): SendChatBotInterface {
+    let converteData: SendChatBotInterface = {
         type: data.type,
         text: {
             body: data.text.body
@@ -16,8 +16,7 @@ export function converteModelToInterfaceImageButtons(data: ChatBotModel): SendIm
                 button: data.interactive?.action?.button ? data.interactive?.action?.button : '',
                 buttons: data.interactive?.action?.buttons && data.interactive?.action?.buttons?.length > 0 ? itemsButtons(data.interactive?.action?.buttons) : [],
                 sections: data.interactive?.action?.sections && data.interactive?.action?.sections.length > 0 ? mapListItems(data.interactive?.action?.sections) : []
-            },
-
+            }
         }
     }
 
