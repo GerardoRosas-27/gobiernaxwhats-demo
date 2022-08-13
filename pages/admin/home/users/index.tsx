@@ -1,3 +1,4 @@
+import HomeLayout from '@components/admin/layouts/home';
 import React from 'react'
 
 const ListUsersPage = () => {
@@ -6,3 +7,4 @@ const ListUsersPage = () => {
     )
 }
 export default ListUsersPage;
+ListUsersPage.Layout = HomeLayout

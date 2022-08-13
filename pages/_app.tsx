@@ -1,9 +1,10 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import MainLayout from '@components/layouts/main';
+
+
 
 function MyApp(data: any) {
-  let { Component, pageProps } = data
+  let { Component, pageProps, router } = data
+  console.log(router.pathname)
   const Layout = Component?.Layout || EmptyLayout;
   return (
     <Layout>

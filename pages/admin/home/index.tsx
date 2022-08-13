@@ -1,4 +1,4 @@
-import HomeLayout from '@components/layouts/home'
+import HomeLayout from '@components/admin/layouts/home'
 import React from 'react'
 
 const LandingPage = () => {
