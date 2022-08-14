@@ -9,6 +9,5 @@ const LandingPage = () => {
   )
 }
 export default LandingPage
-LandingPage.Layout = HomeLayout
 
 

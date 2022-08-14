@@ -7,4 +7,3 @@ const ListCustomersPage = () => {
     )
 }
 export default ListCustomersPage;
-ListCustomersPage.Layout = HomeLayout

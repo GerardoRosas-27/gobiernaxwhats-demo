@@ -7,4 +7,3 @@ const ListUsersPage = () => {
     )
 }
 export default ListUsersPage;
-ListUsersPage.Layout = HomeLayout
