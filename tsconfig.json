@@ -13,6 +13,9 @@
       ],
       "@models/*": [
         "src/models/*"
+      ],
+      "@store/*": [
+        "src/store/*"
       ]
     },
     "target": "es5",
