@@ -8,34 +8,40 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { environment } from 'src/environment/dev';
 import { ModulesBotModel } from '@models/modules-bot.model';
-import { useModuleState } from '@store/modulesFlows/ModulesContext';
+import { initialState, useModuleState } from '@store/modulesFlows/ModulesContext';
+import { getModules } from '@services/front/modules.services';
+import ListModules from '@components/admin/flows/ListModules';
 
 const ListFlowsPage = () => {
 
-
     const { state, dispatch } = useModuleState();
-    const [loading, setloading] = useState(false)
+    const [loading, setloading] = useState(false);
+
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch(`${environment.apiAdmin}/flows`);
-            const data: responseGeneral<ModulesBotModel[]> = await response.json()
-            data && dispatch({ type: "ADD_MODULES", payload: { data: data.body } });
+        
+        (async function () {
+            const data = await getModules()
+            if (data && data.staus === 200) {
+                dispatch({ type: "ADD_MODULES", payload: { data: data.body } });
+                dispatch({ type: "SELECT_MODULE", payload: { data: initialState.select } });
+            }
             setloading(true);
-        }
-        fetchData().catch(error => {
-            setloading(true);
-        })
+        })();
     }, [])
+
+    const selectModule = (data: ModulesBotModel) => {
+        dispatch({ type: "SELECT_MODULE", payload: { data } });
+    }
+
+
     return (
         <React.Fragment>
             <CssBaseline />
             <Container maxWidth="lg">
 
-                {state.map(item => {
-                    return (
-                        <h1 key={item._id}>{item.name}</h1>
-                    )
-                })}
+               <ListModules></ListModules>
+
+                <p>{JSON.stringify(state.select)}</p>
 
             </Container>
         </React.Fragment>

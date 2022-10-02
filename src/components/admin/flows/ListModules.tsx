@@ -1,7 +1,5 @@
-import { productsDTO, propertisDTO } from "../../interfaces/products";
-import { DataProps } from "@interfaces/Props";
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react';
+import { ChangeEventHandler, useEffect, useState } from 'react';
 //table
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -18,22 +16,30 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
-import { AcctionProduct } from "src/environment/constan";
-import { deleteProductService, postProductService } from "@services/product.services";
+import SearchIcon from '@mui/icons-material/Search';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormControl from '@mui/material/FormControl';
 
 
-const ListProducts = (props: DataProps<productsDTO[]>): JSX.Element => {
-    const { data } = props;
+import { useModuleState } from "@store/modulesFlows/ModulesContext";
+import { deleteModule } from "@services/front/modules.services";
+import { ModulesBotModel } from "@models/modules-bot.model";
+
+const ListModules = (): JSX.Element => {
+
     const router = useRouter()
     //useState table
-    const [products, setProducts] = useState<productsDTO[]>([])
+
+    const { state, dispatch } = useModuleState();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [valueFilter, setValueFilter] = useState('');
 
-    useEffect(() => {
-        setProducts(data)
-    }, [data])
-
+    const filterModules: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setValueFilter(e.target.value)
+    }
 
     //events table
     const handleChangePage = (event: any, newPage: any) => {
@@ -44,50 +50,50 @@ const ListProducts = (props: DataProps<productsDTO[]>): JSX.Element => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    const onDetailProduct = (data: productsDTO) => {
+    const onDetailProduct = (data: ModulesBotModel) => {
         console.log("data: ", data);
+        dispatch({ type: "SELECT_MODULE", payload: { data } });
         router.push({
-            pathname: '/product/[...id]',
-            query: { id: [AcctionProduct.UPDATE_PRODUCT, data.id ? data.id : ''] }
+            pathname: 'flows/[detail]',
+            query: { detail: data._id }
         })
     }
 
 
     const onDeleteProduct = async (id: string) => {
-        const response = await deleteProductService(id);
+        const response = await deleteModule(id);
         if (response.staus == 200) {
-            let data = products.filter(item => item.id !== id);
-            setProducts(data);
+            dispatch({ type: "REMOVE_MODULE", payload: { id } });
         }
     };
 
     const onNewProduct = () => {
         router.push({
-            pathname: '/product/[...id]',
-            query: { id: [AcctionProduct.NEW_PRODUCT, '0'] }
+            pathname: 'flows/new'
         })
-    }
-
-    const PropertiComponent = (data: propertisDTO[]) => {
-        return data.map(item => {
-            return (
-                <p key={item.id}>
-                    <strong>
-                        {item.size}:&nbsp;
-                    </strong>
-                    {item.price}
-                </p>
-            )
-        })
-
     }
 
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 
-            <Grid container direction="row" justifyContent="flex-end" spacing={2}>
-                <Grid item p={2} md={1} sm={2}>
+            <Grid container direction="row" justifyContent="flex-end" spacing={8}>
+                <Grid item p={2} sm={6}>
+                    <FormControl  sx={{ m: 1, width: '100%' }} variant="outlined">
+                        <InputLabel htmlFor="search">Buscar</InputLabel>
+                        <OutlinedInput
+                            id="search"
+                            onChange={filterModules}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <SearchIcon></SearchIcon>
+                                </InputAdornment>
+                            }
+                            label="Buscar"
+                        />
+                    </FormControl>
+                </Grid>
+                <Grid item p={2} sm={2}>
                     <Fab onClick={() => onNewProduct()} color="primary" aria-label="add">
                         <AddIcon />
                     </Fab>
@@ -98,35 +104,34 @@ const ListProducts = (props: DataProps<productsDTO[]>): JSX.Element => {
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="right">Nombre</TableCell>
-                            <TableCell align="right">Categoria</TableCell>
-                            <TableCell align="right">Precios</TableCell>
-                            <TableCell align="right">Descripción</TableCell>
-                            <TableCell align="right">Acciones</TableCell>
-                            <TableCell align="right">Imagen</TableCell>
+                            <TableCell align="center">id</TableCell>
+                            <TableCell align="center">nombre</TableCell>
+                            <TableCell align="center">principal</TableCell>
+                            <TableCell align="center">Siguiente Modulo</TableCell>
+                            <TableCell align="center">Acciones</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {products
+                        {state.list.filter(item => item.name.includes(valueFilter))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                        <TableCell component="th" scope="row">{row.name}
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                                        <TableCell align="center">{row._id}
                                         </TableCell>
-                                        <TableCell align="right">{row.category}</TableCell>
-                                        <TableCell align="right">{PropertiComponent(row.propertis)}</TableCell>
-                                        <TableCell align="right">{row.description}</TableCell>
-                                        <TableCell align="right">
+                                        <TableCell align="center">{row.name}
+                                        </TableCell>
+                                        <TableCell >{row.principal}</TableCell>
+                                        <TableCell >{row.next_module_id}</TableCell>
+                                        <TableCell align="center">
                                             < Fab onClick={() => onDetailProduct(row)} size="small" color="primary" aria-label="add">
                                                 <EditIcon></EditIcon>
                                             </Fab>
-                                            < Fab onClick={() => onDeleteProduct(row.id as string)} size="small" color="secondary" aria-label="add">
+                                            < Fab onClick={() => onDeleteProduct(row._id as string)} size="small" color="secondary" aria-label="add">
                                                 <DeleteForeverIcon></DeleteForeverIcon>
                                             </Fab>
                                         </TableCell>
 
-                                        <TableCell align="right"> <p>{row.img}</p><img src={'./chat_boot/' + row.img} alt="" /> </TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -144,7 +149,7 @@ const ListProducts = (props: DataProps<productsDTO[]>): JSX.Element => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 50, 100]}
                 component="div"
-                count={products.length}
+                count={state.list.filter(item => item.name.includes(valueFilter)).length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -155,4 +160,4 @@ const ListProducts = (props: DataProps<productsDTO[]>): JSX.Element => {
     );
 }
 
-export default ListProducts
+export default ListModules

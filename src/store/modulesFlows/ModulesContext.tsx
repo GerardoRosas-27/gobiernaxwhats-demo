@@ -10,8 +10,17 @@ import {
 } from "react";
 import { v4 as uuid } from "uuid";
 
+export interface IModuleState {
+  list: ModulesBotModel[],
+  select: ModulesBotModel
+}
+export const initialState = {
+  select: { _id: "", name: "", principal: false } as ModulesBotModel,
+  list: [] as ModulesBotModel[],
+};
+
 const ModuleContext = createContext<{
-  state: ModulesBotModel[];
+  state: IModuleState
   dispatch: Dispatch<Actions>;
 }>(undefined!);
 
@@ -27,31 +36,41 @@ type Action<T extends string, payload> = payload extends undefined
 type Actions =
   | Action<"ADD_MODULES", { data: ModulesBotModel[] }>
   | Action<"ADD_MODULE", { data: ModulesBotModel }>
+  | Action<"SELECT_MODULE", { data: ModulesBotModel }>
   | Action<"REMOVE_MODULE", { id: string }>;
 
-const reducer: Reducer<ModulesBotModel[], Actions> = (state, action): ModulesBotModel[] => {
+const reducer: Reducer<IModuleState, Actions> = (state, action): IModuleState => {
   switch (action.type) {
     case "ADD_MODULES": {
-      return [
-        ...action.payload.data
-      ];
+      return {
+        ...state,
+        list: action.payload.data
+      }
     }
     case "ADD_MODULE": {
-      return [
+      const dataModule = [...state.list, { ...action.payload.data, id: uuid() }];
+      return {
         ...state,
-        { ...action.payload.data, _id: uuid() }
-      ];
+        list: dataModule
+      }
+    }
+    case "SELECT_MODULE": {
+      return {
+        ...state,
+        select: action.payload.data 
+      }
     }
     case "REMOVE_MODULE": {
-      return [
-        ...state.filter(item => item._id !== action.payload.id)
-      ];
+      return {
+        ...state,
+        list: [...state.list.filter(item => item._id !== action.payload.id)]
+      };
     }
   }
 };
 
 export const ModuleStateProvider = ({ children }: ScriptProps) => {
-  const [state, dispatch] = useReducer(reducer, []);
+  const [state, dispatch] = useReducer(reducer, initialState);
   console.log("state: ", state)
 
   return (
