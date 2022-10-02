@@ -1,31 +1,29 @@
+import { ModulesBotModel } from "@models/modules-bot.model";
 import { NextApiRequest, NextApiResponse } from "next";
-import { responseGeneral } from "../../../../src/interfaces/response";
-import { ChatBotModel } from "../../../../src/models/chat-bot.model";
-import { createChatBot, searchChatBots } from "../../../../src/services/back/chat-bot.bd.service";
-let resGeneral: responseGeneral<ChatBotModel[]>;
+import { responseGeneral } from "@interfaces/response";
+import { getModules, postModule } from "@services/back/modules-bot.db.service";
+let resGeneral: responseGeneral<ModulesBotModel[]>;
 export default async function chatBot(
     req: NextApiRequest,
-    res: NextApiResponse<responseGeneral<ChatBotModel[]>>
+    res: NextApiResponse<responseGeneral<ModulesBotModel[]>>
 ) {
     switch (req.method) {
         case 'GET':
-            let data: ChatBotModel[] = await searchChatBots()
+            let data: ModulesBotModel[] = await getModules();
             resGeneral = {
                 staus: 200,
                 body: data,
-                message: "Get chat"
+                message: "List Modules"
             }
             res.status(200).json(resGeneral);
-
             break;
-
         case 'POST':
-            let request: ChatBotModel = req.body;
-            let response = await createChatBot(request);
+            let request: ModulesBotModel = req.body;
+            let response = await postModule(request);
             resGeneral = {
                 staus: 200,
                 body: [response],
-                message: "chat creado"
+                message: "Modulo creado"
             }
             res.status(200).json(resGeneral);
             break;

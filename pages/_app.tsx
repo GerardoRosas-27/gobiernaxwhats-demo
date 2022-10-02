@@ -1,9 +1,11 @@
 import ChatLayout from '@components/admin/layouts/flows';
 import FlowsLayout from '@components/admin/layouts/flows';
 import HomeLayout from '@components/admin/layouts/home';
+import { ModuleStateProvider } from '@store/modulesFlows/ModulesContext';
 import initialStateUser from '@store/users/initalStateUser';
 import { reduceUser } from '@store/users/reducerUser';
 import UserContext from '@store/users/UserContext';
+import { AppProps } from 'next/app';
 import { useEffect, useReducer, useState } from 'react';
 import '../styles/globals.css'
 
@@ -22,11 +24,10 @@ const routerChats = [
   '/admin/home/flows/new/chats/detail',
 ]
 
-function MyApp(data: any) {
-  let { Component, pageProps, router } = data
-  const store = useReducer(reduceUser, initialStateUser);
+function MyApp({ Component, pageProps,router }: AppProps) {
+
   return (
-    <UserContext.Provider value={store}>
+    <ModuleStateProvider>
       <>
         {routerHome.includes(router.pathname) ?
           <HomeLayout>
@@ -43,7 +44,7 @@ function MyApp(data: any) {
             </>
         }
       </>
-    </UserContext.Provider>
+    </ModuleStateProvider>
   )
 }
 
