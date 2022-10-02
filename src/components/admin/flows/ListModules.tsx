@@ -9,18 +9,21 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TablePagination from '@mui/material/TablePagination';
-//icons acciones
-import Box from '@mui/material/Box';
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import EditIcon from '@mui/icons-material/Edit';
+
 import Grid from '@mui/material/Grid';
 import SearchIcon from '@mui/icons-material/Search';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
+
+//icons acciones
+import Box from '@mui/material/Box';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
 
 import { useModuleState } from "@store/modulesFlows/ModulesContext";
@@ -73,13 +76,20 @@ const ListModules = (): JSX.Element => {
         })
     }
 
+    const onChats = (data: ModulesBotModel) => {
+        console.log("data: ", data);
+        dispatch({ type: "SELECT_MODULE", payload: { data } });
+        router.push({
+            pathname: 'chats/',
+        })
+    }
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 
             <Grid container direction="row" justifyContent="flex-end" spacing={8}>
                 <Grid item p={2} sm={6}>
-                    <FormControl  sx={{ m: 1, width: '100%' }} variant="outlined">
+                    <FormControl sx={{ m: 1, width: '100%' }} variant="outlined">
                         <InputLabel htmlFor="search">Buscar</InputLabel>
                         <OutlinedInput
                             id="search"
@@ -126,6 +136,9 @@ const ListModules = (): JSX.Element => {
                                         <TableCell align="center">
                                             < Fab onClick={() => onDetailProduct(row)} size="small" color="primary" aria-label="add">
                                                 <EditIcon></EditIcon>
+                                            </Fab>
+                                            < Fab onClick={() => onChats(row)} size="small" color="primary" aria-label="add">
+                                                <WhatsAppIcon></WhatsAppIcon>
                                             </Fab>
                                             < Fab onClick={() => onDeleteProduct(row._id as string)} size="small" color="secondary" aria-label="add">
                                                 <DeleteForeverIcon></DeleteForeverIcon>

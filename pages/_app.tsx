@@ -1,6 +1,7 @@
 import ChatLayout from '@components/admin/layouts/flows';
 import FlowsLayout from '@components/admin/layouts/flows';
 import HomeLayout from '@components/admin/layouts/home';
+import { ChatStateProvider } from '@store/chats/chatsContext';
 import { ModuleStateProvider } from '@store/modulesFlows/ModulesContext';
 import initialStateUser from '@store/users/initalStateUser';
 import { reduceUser } from '@store/users/reducerUser';
@@ -28,7 +29,7 @@ function MyApp({ Component, pageProps,router }: AppProps) {
 
   return (
     <ModuleStateProvider>
-      <>
+      <ChatStateProvider>
         {routerHome.includes(router.pathname) ?
           <HomeLayout>
             <Component {...pageProps} />
@@ -43,7 +44,7 @@ function MyApp({ Component, pageProps,router }: AppProps) {
               <Component {...pageProps} />
             </>
         }
-      </>
+      </ChatStateProvider>
     </ModuleStateProvider>
   )
 }

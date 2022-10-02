@@ -29,11 +29,6 @@ const ListFlowsPage = () => {
         })();
     }, [])
 
-    const selectModule = (data: ModulesBotModel) => {
-        dispatch({ type: "SELECT_MODULE", payload: { data } });
-    }
-
-
     return (
         <React.Fragment>
             <CssBaseline />
