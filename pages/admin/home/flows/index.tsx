@@ -18,7 +18,7 @@ const ListFlowsPage = () => {
     const [loading, setloading] = useState(false);
 
     useEffect(() => {
-        
+
         (async function () {
             const data = await getModules()
             if (data && data.staus === 200) {
@@ -32,9 +32,10 @@ const ListFlowsPage = () => {
     return (
         <React.Fragment>
             <CssBaseline />
-            <Container maxWidth="lg">
 
-               <ListModules></ListModules>
+            <Container maxWidth="lg">
+                <h2>Modulos</h2>
+                <ListModules></ListModules>
 
                 <p>{JSON.stringify(state.select)}</p>
 

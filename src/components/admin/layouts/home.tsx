@@ -82,7 +82,7 @@ const HomeLayout = (components: any) => {
                         {open ? <Icon.ChevronLeftIcon /> : <Icon.MenuIcon />}
                     </Ui.IconButton>
                     <Ui.Typography variant="h6" noWrap component="div">
-                        Clipped drawer
+                        Admin GobiernaXwhats
                     </Ui.Typography>
                 </Ui.Toolbar>
             </AppBar>
@@ -122,7 +122,7 @@ const HomeLayout = (components: any) => {
                                         <Icon.InboxIcon />
                                     </Ui.ListItemIcon>
                                     <Ui.ListItemText>
-                                        Flujos
+                                        Modulos
                                     </Ui.ListItemText>
                                 </Ui.ListItemButton>
                             </Ui.ListItem>
@@ -167,7 +167,7 @@ const HomeLayout = (components: any) => {
                     </Ui.List>
                 </Ui.Box>
             </Ui.Drawer >
-            <Main open={open}>
+            <Main open={open} style={{background: 'rgb(241, 241, 241)'}}>
                 <DrawerHeader />
                 {components.children}
             </Main>

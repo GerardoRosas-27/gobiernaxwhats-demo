@@ -20,9 +20,9 @@ const routerHome = [
   '/admin/home/flows/detail',
 ]
 const routerChats = [
-  '/admin/home/flows/new/chats',
-  '/admin/home/flows/new/chats/new',
-  '/admin/home/flows/new/chats/detail',
+  '/admin/home/flows/chats',
+  '/admin/home/flows/chats/new',
+  '/admin/home/flows/chats/detail',
 ]
 
 function MyApp({ Component, pageProps,router }: AppProps) {

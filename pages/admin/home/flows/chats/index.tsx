@@ -14,22 +14,32 @@ import Alert from '@mui/material/Alert';
 import { FormChat } from '@components/admin/chats/FormChat';
 import { getChats } from '@services/front/chtas.services';
 import { initialState, useChatState } from '@store/chats/chatsContext';
+import CardInfoModule from '@components/admin/chats/CardInfoModule';
+import { useModuleState } from '@store/modulesFlows/ModulesContext';
+import { ChatBotModel } from '@models/chat-bot.model';
 
 
 
 
 const chatsPage = () => {
+    const { state, dispatch } = useModuleState();
+    const { stateChat, dispatchChat } = useChatState();
 
-    const { state, dispatch } = useChatState();
     const [loading, setloading] = useState(false);
 
     useEffect(() => {
 
         (async function () {
-            const data = await getChats()
-            if (data && data.staus === 200) {
-                dispatch({ type: "ADD_CHATS", payload: { data: data.body } });
-                dispatch({ type: "SELECT_CHAT", payload: { data: initialState.select } });
+            const result = await getChats()
+
+            if (result && result.staus === 200) {
+                let data: ChatBotModel[] = [];
+                let dataChats: string[] = state && state.select && state.select.chats && state.select.chats?.length > 0 ? state.select.chats : [];
+                console.log("id slect chats:", dataChats)
+                data = result.body.filter(item1 => item1._id === dataChats.filter(item2 => item2 === item1._id)[0]);
+                console.log("slect chats:", data)
+                dispatchChat({ type: "ADD_CHATS", payload: { data } });
+                dispatchChat({ type: "SELECT_CHAT", payload: { data: initialState.select } });
             }
             setloading(true);
         })();
@@ -39,8 +49,12 @@ const chatsPage = () => {
     return (
         <React.Fragment>
             <CssBaseline />
+
+            <CardInfoModule></CardInfoModule>
+
+
             <Grid container direction="row" justifyContent="center" spacing={2}>
-                {state.list.map(item => {
+                {stateChat.list.map(item => {
                     return (
                         <Grid item p={2} sm={4} key={item._id}>
                             <FormChat data={item}></FormChat>

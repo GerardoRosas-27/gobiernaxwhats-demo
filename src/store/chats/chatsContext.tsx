@@ -24,8 +24,8 @@ export const initialState = {
 };
 
 const ChatContext = createContext<{
-    state: IChatState
-    dispatch: Dispatch<Actions>;
+    stateChat: IChatState
+    dispatchChat: Dispatch<Actions>;
 }>(undefined!);
 
 
@@ -74,11 +74,11 @@ const reducer: Reducer<IChatState, Actions> = (state, action): IChatState => {
 };
 
 export const ChatStateProvider = ({ children }: ScriptProps) => {
-    const [state, dispatch] = useReducer(reducer, initialState);
-    console.log("state: ", state)
+    const [stateChat, dispatchChat] = useReducer(reducer, initialState);
+    console.log("state: ", stateChat)
 
     return (
-        <ChatContext.Provider value={{ state, dispatch }}>
+        <ChatContext.Provider value={{ stateChat, dispatchChat }}>
             {children}
         </ChatContext.Provider>
     );

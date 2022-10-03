@@ -4,7 +4,7 @@ import HomeLayout from './home'
 const ChatLayout = (components: any) => {
     return (
         <>
-            <p>Lista de chats</p>
+             <h2>Chats</h2>
 
             {components.children}
 

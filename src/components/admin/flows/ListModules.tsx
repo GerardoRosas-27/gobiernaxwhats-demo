@@ -80,7 +80,7 @@ const ListModules = (): JSX.Element => {
         console.log("data: ", data);
         dispatch({ type: "SELECT_MODULE", payload: { data } });
         router.push({
-            pathname: 'chats/',
+            pathname: 'flows/chats/',
         })
     }
 
