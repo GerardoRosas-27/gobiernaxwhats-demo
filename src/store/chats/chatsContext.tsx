@@ -12,6 +12,7 @@ import { v4 as uuid } from "uuid";
 
 export interface IChatState {
     list: ChatBotModel[],
+    filter: ChatBotModel[],
     select: ChatBotModel
 }
 export const initialState = {
@@ -21,6 +22,7 @@ export const initialState = {
         text: { body: '' }
     } as ChatBotModel,
     list: [] as ChatBotModel[],
+    filter: [] as ChatBotModel[]
 };
 
 const ChatContext = createContext<{
@@ -39,6 +41,7 @@ type Action<T extends string, payload> = payload extends undefined
     };
 type Actions =
     | Action<"ADD_CHATS", { data: ChatBotModel[] }>
+    | Action<"FILTER_CHATS", { data: ChatBotModel[] }>
     | Action<"ADD_CHAT", { data: ChatBotModel }>
     | Action<"SELECT_CHAT", { data: ChatBotModel }>
     | Action<"REMOVE_CHAT", { id: string }>;
@@ -48,7 +51,14 @@ const reducer: Reducer<IChatState, Actions> = (state, action): IChatState => {
         case "ADD_CHATS": {
             return {
                 ...state,
-                list: action.payload.data
+                list: action.payload.data,
+                filter: action.payload.data
+            }
+        }
+        case "FILTER_CHATS": {
+            return {
+                ...state,
+                filter: action.payload.data
             }
         }
         case "ADD_CHAT": {

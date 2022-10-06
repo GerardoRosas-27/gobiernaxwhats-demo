@@ -7,6 +7,9 @@ export interface PropsProduct{
 export interface DataProps<T>{
     data: T;
 }
+export interface CustomProps<M,T>{
+    M: T;
+}
 export interface PropsEvents<T,M>{
     data: T;
     event: (m:M) => void;

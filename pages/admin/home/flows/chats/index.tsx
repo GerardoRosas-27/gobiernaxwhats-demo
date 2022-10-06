@@ -54,7 +54,7 @@ const chatsPage = () => {
 
 
             <Grid container direction="row" justifyContent="center" spacing={2}>
-                {stateChat.list.map(item => {
+                {stateChat.filter.map(item => {
                     return (
                         <Grid item p={2} sm={4} key={item._id}>
                             <FormChat data={item}></FormChat>

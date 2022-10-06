@@ -7,6 +7,9 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useModuleState } from '@store/modulesFlows/ModulesContext';
+import { useChatState } from '@store/chats/chatsContext';
+import Fab from '@mui/material/Fab';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 const bull = (
     <Box
@@ -20,11 +23,19 @@ const bull = (
 export default function CardInfoModule() {
 
     const { state, dispatch } = useModuleState();
+    const { stateChat, dispatchChat } = useChatState();
+    const onUpdateChats = () => {
+        dispatchChat({ type: "FILTER_CHATS", payload: { data: stateChat.list } })
+    }
 
     return (
         <Container maxWidth="md">
             <Card sx={{ minWidth: 275 }}>
+
                 <CardContent>
+                    <Fab onClick={() => onUpdateChats()} color="primary" aria-label="Actualizar chats">
+                        <RefreshIcon />
+                    </Fab>
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                         Modulo:{state.select._id} |  Modulo siguiente: {state.select.next_module_id}
                     </Typography>
@@ -32,10 +43,10 @@ export default function CardInfoModule() {
                         {state.select.name}
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    Principal: {state.select.principal}
+                        Principal: {state.select.principal}
                     </Typography>
                     <Typography variant="body2">
-                        { JSON.stringify(state.select.chats)}
+                        {JSON.stringify(state.select.chats)}
                     </Typography>
                 </CardContent>
 

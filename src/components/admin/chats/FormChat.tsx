@@ -25,6 +25,8 @@ import MergeIcon from '@mui/icons-material/Merge';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ReplyIcon from '@mui/icons-material/Reply';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import { useChatState } from '@store/chats/chatsContext';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 const customWidth = {
     width: '100%',
@@ -71,13 +73,37 @@ const StyledMenu = styled((props: MenuProps) => (
     },
 }));
 export const FormChat = (props: DataProps<ChatBotModel>) => {
-    const { data } = props
+
+    const { data } = props;
+    const { stateChat, dispatchChat } = useChatState();
     const [dataChat, setDataChat] = useState<ChatBotModel>(data)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
+
+
+
+
+    const handleAsignado = (id: string) => {
+        let result: ChatBotModel | undefined = stateChat.list.find(item => item._id === id);
+        if (result) {
+            dispatchChat({ type: "FILTER_CHATS", payload: { data: [dataChat, result] } });
+        }
+
+        setAnchorEl(null);
+    }
+    const handleSecctionAsignados = (dataChats: RowsModel[]) => {
+
+        console.log("id slect chats:", dataChats)
+        let data: ChatBotModel[] = [];
+        data = stateChat.list.filter(item1 => item1._id && item1._id === dataChats.filter(item2 => item1._id && item1._id === item2.id)[0].id);
+        dispatchChat({ type: "FILTER_CHATS", payload: { data } });
+    }
+
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -111,7 +137,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
             <Container maxWidth="md" key={dataSections._id}>
                 <Grid container direction="row" justifyContent="center" spacing={1} style={{ padding: '10px' }}>
                     <h3>{dataSections.title}</h3>
-                    <Fab size="small" aria-label="add" style={{ marginLeft: '10px', top: '10px' }}>
+                    <Fab onClick={() => handleSecctionAsignados(dataSections.rows)} size="small" aria-label="add" style={{ marginLeft: '10px', top: '10px' }}>
                         <IconButton color="primary" aria-label="upload picture" component="label">
                             <AutoAwesomeMotionIcon />
                         </IconButton>
@@ -140,12 +166,13 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                         <MoreVertIcon />
                     </IconButton>
                 </Fab>
-                <MenuItems />
+                <MenuItems data={dataSections.id} />
             </Grid>
         );
     }
 
-    const MenuItems = () => {
+    const MenuItems = (props: DataProps<string>) => {
+        const { data } = props;
         return (
             <StyledMenu
                 id="demo-customized-menu"
@@ -165,7 +192,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                     <MergeIcon />
                     Asignar
                 </MenuItem>
-                <MenuItem onClick={handleClose} disableRipple>
+                <MenuItem onClick={() => handleAsignado(data)} disableRipple>
                     <FileCopyIcon />
                     Asignado
                 </MenuItem>
@@ -199,9 +226,10 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <Container maxWidth="md">
                 <Grid container direction="row" spacing={1}>
-                    <Grid item p={2} sm={12}>
+                    <Grid item p={2} sm={10}>
                         <TextField style={customWidth} value={dataChat.name} name="name" onChange={handleChangue} label="Nombre" variant="standard" />
                     </Grid>
+
 
 
                     <Grid item p={2} sm={12}>
