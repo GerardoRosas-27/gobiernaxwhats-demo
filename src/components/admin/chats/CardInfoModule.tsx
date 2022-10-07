@@ -29,7 +29,7 @@ export default function CardInfoModule() {
     }
 
     return (
-        <Container maxWidth="md">
+        <Container maxWidth="md" sx={{ paddingBottom: '20px' }}>
             <Card sx={{ minWidth: 275 }}>
 
                 <CardContent>
@@ -43,11 +43,9 @@ export default function CardInfoModule() {
                         {state.select.name}
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        Principal: {state.select.principal}
+                        {state.select.principal ? 'Es principal' : 'No es principal'}
                     </Typography>
-                    <Typography variant="body2">
-                        {JSON.stringify(state.select.chats)}
-                    </Typography>
+                   
                 </CardContent>
 
             </Card>

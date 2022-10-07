@@ -4,4 +4,5 @@ export interface ModulesBotModel {
     principal: boolean;
     next_module_id?: string;
     chats?: string[]; 
+    id_chat_principal?: string;
 }
