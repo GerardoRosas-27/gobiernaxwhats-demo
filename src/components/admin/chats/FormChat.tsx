@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Fab from '@mui/material/Fab';
 
-import { ButtonsModel, ChatBotModel, ListModel, RowsModel } from '@models/chat-bot.model';
+import { ButtonsModel, ChatBotModel, InputQuestionModel, ListModel, RowsModel } from '@models/chat-bot.model';
 import { DataProps } from '@interfaces/Props';
 import { TypeInputUser } from 'src/environment/var-const';
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
@@ -30,8 +30,14 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import Switch from '@mui/material/Switch';
 import { useModuleState } from '@store/modulesFlows/ModulesContext';
 import InputLabel from '@mui/material/InputLabel';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { ChatMenuPopup } from '@interfaces/chat-ui.interface';
 
 const customWidth = {
     width: '100%',
@@ -85,17 +91,13 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
     const { state, dispatch } = useModuleState();
     const [selectType, setSelectType] = React.useState(data.type);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [selectButton, setSelectButton] = useState<RowsModel>({ id: '', title: '', description: '' })
+    const [chatMenuPopup, setChatMenuPopup] = useState<ChatMenuPopup>({ id: '', asignar: '' })
     const [checked, setChecked] = React.useState(state.select.id_chat_principal === data._id ? true : false);
     const open = Boolean(anchorEl);
 
 
-    const handleClickMenuChatItem = (event: React.MouseEvent<HTMLElement>, data: RowsModel) => {
-        setSelectButton(data)
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClickMenuChat = (event: React.MouseEvent<HTMLElement>, data: any) => {
+    const handleClickChatMenuPopup = (event: React.MouseEvent<HTMLElement>, data: ChatMenuPopup) => {
+        setChatMenuPopup(data)
         setAnchorEl(event.currentTarget);
     };
 
@@ -183,32 +185,42 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
         );
     }
     const InteractiveSectionsListButton = (dataSections: RowsModel) => {
+        let dataItem: ChatMenuPopup = {
+            id: dataChat._id as string,
+            asignar: dataSections.id,
+            title: dataSections.title
+        }
+
         return (
-            <Grid item p={2} sm={12} key={dataSections.id}>
 
-                <Button variant="contained" component="label" style={{ marginRight: '10px' }}>
-                    {dataSections.title}
-                </Button>
-
-                <Fab size="small" aria-label="add" style={{ marginRight: '10px' }}
-                    aria-controls={open ? 'demo-customized-menu' : undefined}
-                    onClick={(e) => handleClickMenuChatItem(e, dataSections)}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}>
-                    <IconButton color="primary" aria-label="upload picture" component="label">
-                        <MoreVertIcon />
-                    </IconButton>
-                </Fab>
-                <MenuItems />
+            <Grid container direction="row" justifyContent="center" spacing={1} style={{ padding: '10px' }} key={dataSections.id}>
+                <Grid item p={2} sm={10} >
+                    <Button variant="contained" component="label" style={{ marginRight: '10px' }}>
+                        {dataSections.title}
+                    </Button>
+                </Grid>
+                <Grid item p={2} sm={2} >
+                    <Fab size="small" aria-label="add" style={{ marginRight: '10px' }}
+                        aria-controls={open ? 'demo-customized-menu2-' + dataSections.id : undefined}
+                        onClick={(e) => handleClickChatMenuPopup(e, dataItem)}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}>
+                        <IconButton color="primary" aria-label="upload picture" component="label">
+                            <MoreVertIcon />
+                        </IconButton>
+                    </Fab>
+                    <MenuChatItems />
+                </Grid>
             </Grid>
+
         );
     }
 
-    const MenuItems = () => {
+    const MenuChatItems = () => {
 
         return (
             <StyledMenu
-                id="demo-customized-menu"
+                id={'demo-customized-menu2-' + chatMenuPopup.asignar}
                 MenuListProps={{
                     'aria-labelledby': 'demo-customized-button',
                 }}
@@ -225,7 +237,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                     <MergeIcon />
                     Asignar
                 </MenuItem>
-                <MenuItem disabled={selectButton.id.length > 0 ? false : true} onClick={() => handleAsignado(selectButton.id)} >
+                <MenuItem disabled={chatMenuPopup.asignar.length > 0 ? false : true} onClick={() => handleAsignado(chatMenuPopup.asignar)} >
                     <FileCopyIcon />
                     Asignado
                 </MenuItem>
@@ -233,7 +245,49 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                     <MoreHorizIcon />
                     Productos
                 </MenuItem>
-               
+
+
+                <Divider sx={{ my: 0.5 }} />
+
+                <MenuItem onClick={handleClose} >
+                    <EditIcon />
+                    Editar
+                </MenuItem>
+                <MenuItem onClick={handleClose} >
+                    <DeleteForeverIcon />
+                    Eliminar
+                </MenuItem>
+
+            </StyledMenu>
+        )
+    }
+    const MenuChat = () => {
+
+        return (
+            <StyledMenu
+                id={'demo-customized-menu1-' + chatMenuPopup.id}
+                MenuListProps={{
+                    'aria-labelledby': 'demo-customized-button',
+                }}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+            >
+
+                <MenuItem onClick={handleClose} disableRipple={false}>
+                    <ReplyIcon />
+                    Disparador
+                </MenuItem>
+
+                <MenuItem disabled={chatMenuPopup.trigger && chatMenuPopup.trigger.length > 0 ? false : true} onClick={() => handleAsignado(chatMenuPopup.trigger ? chatMenuPopup.trigger : '')} >
+                    <FileCopyIcon />
+                    Asignado
+                </MenuItem>
+                <MenuItem onClick={handleClose} >
+                    <MoreHorizIcon />
+                    Productos
+                </MenuItem>
+
 
                 <Divider sx={{ my: 0.5 }} />
 
@@ -250,30 +304,68 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
         )
     }
 
+    const InputQuestino = (dataInput: InputQuestionModel) => {
+        let dataInputItem: ChatMenuPopup = {
+            id: dataChat._id as string,
+            asignar: dataInput.id,
+            title: dataInput.title,
+            description: ''
+        }
 
+        return (
+
+            <Grid container direction="row" justifyContent="center" spacing={1} style={{ padding: '10px' }}>
+
+                <Grid item p={2} sm={10}>
+                    <TextField style={customWidth} value={dataInput.title} name="question" onChange={handleChangue} label="Input" variant="standard" />
+                </Grid>
+                <Grid item p={2} sm={2}>
+                    <Fab size="small" aria-label="add" style={{ marginRight: '10px' }}
+                        aria-controls={open ? 'demo-customized-menu' : undefined}
+                        onClick={(e) => handleClickChatMenuPopup(e, dataInputItem)}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}>
+                        <IconButton color="primary" aria-label="upload picture" component="label">
+                            <MoreVertIcon />
+                        </IconButton>
+                    </Fab>
+                    <MenuChatItems />
+                </Grid>
+            </Grid>
+
+        );
+    }
+
+
+    let chatMenuP: ChatMenuPopup = {
+        id: dataChat._id as string,
+        asignar: '',
+        trigger: dataChat.trigger ? dataChat.trigger : '',
+    }
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', paddingTop: '20px', paddingBottom: '20px' }}>
             <Container maxWidth="md">
                 <Grid container direction="row" spacing={1}>
                     <Grid container direction="row" spacing={1}>
-                        <Grid item sm={6}>
+                        <Grid item sm={10}>
                             Principal   <Switch
                                 checked={checked}
                                 onChange={handleChange}
                                 inputProps={{ 'aria-label': 'controlled' }}
                             />
                         </Grid>
-                        <Grid item sm={6}>
+                        <Grid item sm={2}>
                             <Fab size="small" aria-label="add" style={{ marginRight: '10px' }}
-                                aria-controls={open ? 'demo-customized-menu' : undefined}
-                                onClick={(e) => handleClickMenuChat(e, 'falta enviar data chat')}
+                                aria-controls={open ? 'demo-customized-menu1-' + dataChat._id as string : undefined}
+                                onClick={(e) => handleClickChatMenuPopup(e, chatMenuP)}
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}>
                                 <IconButton color="primary" aria-label="upload picture" component="label">
                                     <MoreVertIcon />
                                 </IconButton>
                             </Fab>
+                            <MenuChat />
                         </Grid>
                     </Grid>
 
@@ -282,7 +374,16 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                     </Grid>
 
                     <Grid item p={2} sm={12}>
-                        <TextField style={customWidth} value={dataChat.text && dataChat.text.body ? dataChat.text.body : ''} name="text" onChange={handleChangue} label="Mensaje" variant="standard" />
+                        <TextField style={customWidth}
+                            id="standard-multiline-static"
+                            label="Mensaje"
+                            multiline
+                            rows={3}
+                            name="text"
+                            value={dataChat.text && dataChat.text.body ? dataChat.text.body : ''}
+                            onChange={handleChangue}
+                            variant="standard"
+                        />
                     </Grid>
 
                     <Grid item p={2} sm={12}>
@@ -307,12 +408,22 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                     </Grid>
 
                 </Grid>
-                <Grid container direction="row" justifyContent="center" spacing={2}>
-                    {dataChat.type === TypeInputUser.interactive ? dataChat.interactive?.action?.buttons?.map(item => InteractiveListButton(item)) : ''}
-                    {dataChat.type === TypeInputUser.interactive ? dataChat.interactive?.action?.sections?.map(item => InteractiveSectionsList(item)) : ''}
-
-                </Grid>
-
+                <Accordion>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                        <Typography>Acciones</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Grid container direction="row" justifyContent="center" spacing={2}>
+                            {dataChat.type === TypeInputUser.interactive ? dataChat.interactive?.action?.buttons?.map(item => InteractiveListButton(item)) : ''}
+                            {dataChat.type === TypeInputUser.interactive ? dataChat.interactive?.action?.sections?.map(item => InteractiveSectionsList(item)) : ''}
+                            {dataChat.type === TypeInputUser.text && dataChat.input ? InputQuestino(dataChat.input) : null}
+                        </Grid>
+                    </AccordionDetails>
+                </Accordion>
             </Container>
         </Paper>
     )

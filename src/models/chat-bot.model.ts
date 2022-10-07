@@ -63,16 +63,16 @@ export interface ChatBotModel {
         longitude: string;
         id: string;
     }
-    input?: {
-        title: string;
-        id: string;
-    }
+    input?: InputQuestionModel,
     name?: string;
     productAll?: string;
     productList?: string[];
     trigger?: string;
 }
-
+export interface InputQuestionModel {
+    title: string;
+    id: string;
+}
 
 
 
