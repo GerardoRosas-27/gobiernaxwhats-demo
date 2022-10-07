@@ -91,7 +91,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
     const { state, dispatch } = useModuleState();
     const [selectType, setSelectType] = React.useState(data.type);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [chatMenuPopup, setChatMenuPopup] = useState<ChatMenuPopup>({ id: '', asignar: '' })
+    const [chatMenuPopup, setChatMenuPopup] = useState<ChatMenuPopup>({ chat: true, id: '', asignar: '' })
     const [checked, setChecked] = React.useState(state.select.id_chat_principal === data._id ? true : false);
     const open = Boolean(anchorEl);
 
@@ -186,6 +186,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
     }
     const InteractiveSectionsListButton = (dataSections: RowsModel) => {
         let dataItem: ChatMenuPopup = {
+            chat: false,
             id: dataChat._id as string,
             asignar: dataSections.id,
             title: dataSections.title
@@ -220,7 +221,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
 
         return (
             <StyledMenu
-                id={'demo-customized-menu2-' + chatMenuPopup.asignar}
+                id={'demo-customized-menu2-' + chatMenuPopup.id}
                 MenuListProps={{
                     'aria-labelledby': 'demo-customized-button',
                 }}
@@ -228,19 +229,33 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                 open={open}
                 onClose={handleClose}
             >
+                {chatMenuPopup.chat ?
+                    <MenuItem onClick={handleClose} disableRipple={false}>
+                        <ReplyIcon />
+                        Disparador
+                    </MenuItem> :
+                    <>
+                        <MenuItem onClick={handleClose} disableRipple={false}>
+                            <AddToPhotosIcon />
+                            Crear
+                        </MenuItem>
+                        <MenuItem onClick={handleClose} >
+                            <MergeIcon />
+                            Asignar
+                        </MenuItem>
+                    </>}
 
-                <MenuItem onClick={handleClose} disableRipple={false}>
-                    <AddToPhotosIcon />
-                    Crear
-                </MenuItem>
-                <MenuItem onClick={handleClose} >
-                    <MergeIcon />
-                    Asignar
-                </MenuItem>
-                <MenuItem disabled={chatMenuPopup.asignar.length > 0 ? false : true} onClick={() => handleAsignado(chatMenuPopup.asignar)} >
+
+
+                {chatMenuPopup.chat ? <MenuItem disabled={chatMenuPopup.trigger && chatMenuPopup.trigger.length > 0 ? false : true} onClick={() => handleAsignado(chatMenuPopup.trigger ? chatMenuPopup.trigger : '')} >
                     <FileCopyIcon />
                     Asignado
-                </MenuItem>
+                </MenuItem> : <MenuItem disabled={chatMenuPopup.asignar.length > 0 ? false : true} onClick={() => handleAsignado(chatMenuPopup.asignar)} >
+                    <FileCopyIcon />
+                    Asignado
+                </MenuItem>}
+
+
                 <MenuItem onClick={handleClose} >
                     <MoreHorizIcon />
                     Productos
@@ -261,51 +276,11 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
             </StyledMenu>
         )
     }
-    const MenuChat = () => {
 
-        return (
-            <StyledMenu
-                id={'demo-customized-menu1-' + chatMenuPopup.id}
-                MenuListProps={{
-                    'aria-labelledby': 'demo-customized-button',
-                }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-            >
-
-                <MenuItem onClick={handleClose} disableRipple={false}>
-                    <ReplyIcon />
-                    Disparador
-                </MenuItem>
-
-                <MenuItem disabled={chatMenuPopup.trigger && chatMenuPopup.trigger.length > 0 ? false : true} onClick={() => handleAsignado(chatMenuPopup.trigger ? chatMenuPopup.trigger : '')} >
-                    <FileCopyIcon />
-                    Asignado
-                </MenuItem>
-                <MenuItem onClick={handleClose} >
-                    <MoreHorizIcon />
-                    Productos
-                </MenuItem>
-
-
-                <Divider sx={{ my: 0.5 }} />
-
-                <MenuItem onClick={handleClose} >
-                    <EditIcon />
-                    Editar
-                </MenuItem>
-                <MenuItem onClick={handleClose} >
-                    <DeleteForeverIcon />
-                    Eliminar
-                </MenuItem>
-
-            </StyledMenu>
-        )
-    }
 
     const InputQuestino = (dataInput: InputQuestionModel) => {
         let dataInputItem: ChatMenuPopup = {
+            chat: false,
             id: dataChat._id as string,
             asignar: dataInput.id,
             title: dataInput.title,
@@ -321,7 +296,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                 </Grid>
                 <Grid item p={2} sm={2}>
                     <Fab size="small" aria-label="add" style={{ marginRight: '10px' }}
-                        aria-controls={open ? 'demo-customized-menu' : undefined}
+                        aria-controls={open ? 'demo-customized-menu1-' + dataChat._id as string : undefined}
                         onClick={(e) => handleClickChatMenuPopup(e, dataInputItem)}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}>
@@ -338,6 +313,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
 
 
     let chatMenuP: ChatMenuPopup = {
+        chat: true,
         id: dataChat._id as string,
         asignar: '',
         trigger: dataChat.trigger ? dataChat.trigger : '',
@@ -365,7 +341,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                                     <MoreVertIcon />
                                 </IconButton>
                             </Fab>
-                            <MenuChat />
+                            <MenuChatItems />
                         </Grid>
                     </Grid>
 
@@ -408,7 +384,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                     </Grid>
 
                 </Grid>
-                <Accordion>
+                <Accordion disabled={dataChat.trigger && dataChat.trigger.length > 0 ? true : false}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"

@@ -1,4 +1,5 @@
 export interface ChatMenuPopup {
+    chat: boolean;
     id: string;
     asignar: string
     trigger?: string;
