@@ -10,7 +10,7 @@ import Fab from '@mui/material/Fab';
 
 import { ButtonsModel, ChatBotModel, InputQuestionModel, ListModel, RowsModel } from '@models/chat-bot.model';
 import { DataProps } from '@interfaces/Props';
-import { TypeInputUser } from 'src/environment/var-const';
+import { catalogTypeChat, catalogTypeChatInteractive, TypeInputUser } from 'src/environment/var-const';
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { styled, alpha } from '@mui/material/styles';
@@ -38,6 +38,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ChatMenuPopup } from '@interfaces/chat-ui.interface';
+import AddIcon from '@mui/icons-material/Add';
 
 const customWidth = {
     width: '100%',
@@ -90,6 +91,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
     const [dataChat, setDataChat] = useState<ChatBotModel>(data)
     const { state, dispatch } = useModuleState();
     const [selectType, setSelectType] = React.useState(data.type);
+    const [selectTypeInteractive, setSelectTypeInteractive] = React.useState('');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [chatMenuPopup, setChatMenuPopup] = useState<ChatMenuPopup>({ chat: true, id: '', asignar: '' })
     const [checked, setChecked] = React.useState(state.select.id_chat_principal === data._id ? true : false);
@@ -136,6 +138,10 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
         setAnchorEl(null);
     };
 
+    const onNewAccionItem = () => {
+
+    }
+
     useEffect(() => {
         setDataChat(data)
     }, [data])
@@ -149,6 +155,9 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
         let name = event.target.name
         setSelectType(event.target.value);
         setDataChat({ ...dataChat, [name]: event.target.value })
+    };
+    const handleChangeSelectTypeInteractive = (event: SelectChangeEvent) => {
+        setSelectTypeInteractive(event.target.value);
     };
 
 
@@ -311,6 +320,36 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
         );
     }
 
+    const addNewActions = () => {
+        return (
+            <Grid container direction="row" justifyContent="center" spacing={2} paddingBottom={4}>
+                <Grid item sm={10}>
+                    {dataChat.type === TypeInputUser.interactive ? <FormControl style={customWidth} variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id="demo-simple-select-standard-label">Tipo de botón</InputLabel>
+                        <Select style={customWidth}
+                            labelId="demo-simple-select-standard-label"
+                            id="demo-simple-select-standard"
+                            value={selectTypeInteractive}
+                            onChange={handleChangeSelectTypeInteractive}
+                            name="type"
+                        >
+                            {catalogTypeChatInteractive.map(item => <MenuItem key={item._id} value={item.key}>{item.value}</MenuItem>)}
+
+                        </Select>
+                    </FormControl> : null
+                    }
+                </Grid>
+                <Grid item sm={2}>
+                    <Fab style={{ top: '10px' }} size="small" onClick={() => onNewAccionItem()} aria-label="add">
+                        <IconButton color="primary" aria-label="agregar acción" component="label">
+                            <AddIcon />
+                        </IconButton>
+                    </Fab>
+                </Grid>
+            </Grid>
+        )
+    }
+
 
     let chatMenuP: ChatMenuPopup = {
         chat: true,
@@ -344,6 +383,22 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                             <MenuChatItems />
                         </Grid>
                     </Grid>
+                    <Grid item p={2} sm={12}>
+
+                        <InputLabel id="demo-simple-select-filled-label">Tipo de mensaje</InputLabel>
+                        <Select style={customWidth}
+                            labelId="demo-simple-select-filled-label"
+                            id="demo-simple-select-filled"
+                            value={selectType}
+                            onChange={handleChangeSelectType}
+                            name="type"
+                        >
+                            <MenuItem value="">
+                                <em>ninguno</em>
+                            </MenuItem>
+                            {catalogTypeChat.map(item => <MenuItem key={item._id} value={item.key}>{item.value}</MenuItem>)}
+                        </Select>
+                    </Grid>
 
                     <Grid item p={2} sm={12}>
                         <TextField style={customWidth} value={dataChat.name} name="name" onChange={handleChangue} label="Nombre" variant="standard" />
@@ -362,26 +417,7 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                         />
                     </Grid>
 
-                    <Grid item p={2} sm={12}>
-                        <InputLabel id="demo-simple-select-filled-label">Tipo</InputLabel>
-                        <Select style={customWidth}
-                            labelId="demo-simple-select-filled-label"
-                            id="demo-simple-select-filled"
-                            value={selectType}
-                            onChange={handleChangeSelectType}
-                            name="type"
-                        >
-                            <MenuItem value="">
-                                <em>ninguno</em>
-                            </MenuItem>
-                            <MenuItem value={TypeInputUser.text}>{TypeInputUser.text}</MenuItem>
-                            <MenuItem value={TypeInputUser.interactive}>{TypeInputUser.interactive}</MenuItem>
-                            <MenuItem value={TypeInputUser.document}>{TypeInputUser.document}</MenuItem>
-                            <MenuItem value={TypeInputUser.video}>{TypeInputUser.video}</MenuItem>
-                            <MenuItem value={TypeInputUser.location}>{TypeInputUser.location}</MenuItem>
-                            <MenuItem value={TypeInputUser.image}>{TypeInputUser.image}</MenuItem>
-                        </Select>
-                    </Grid>
+
 
                 </Grid>
                 <Accordion disabled={dataChat.trigger && dataChat.trigger.length > 0 ? true : false}>
@@ -390,9 +426,15 @@ export const FormChat = (props: DataProps<ChatBotModel>) => {
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
+
                         <Typography>Acciones</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
+
+                        <Grid container direction="row" justifyContent="center" spacing={2}>
+                            {addNewActions()}
+                        </Grid>
+
                         <Grid container direction="row" justifyContent="center" spacing={2}>
                             {dataChat.type === TypeInputUser.interactive ? dataChat.interactive?.action?.buttons?.map(item => InteractiveListButton(item)) : ''}
                             {dataChat.type === TypeInputUser.interactive ? dataChat.interactive?.action?.sections?.map(item => InteractiveSectionsList(item)) : ''}
