@@ -4,7 +4,7 @@ import { ResGeneralApi, ResMessage, ResponseError } from "../../interfaces/api-w
 
 const version = 'v13.0';
 const idPhone = '102587869229421';
-const token = 'EAAFIvRKvJZBoBAI5N2wU9hD7BNlAsSUaacj1xFSz0ShonScBazPP6DgfkGeeXI33lY4Q9c8aK7WvrVdxHhQzHFTSuyyX0ZB5OifOu0PCBuogNXDqF7ev6jX5zrKlniY7lvpojkwC85g9JiTibG4AtPkbh2XcZAGmoW2xENJwRYwtl6DBSIahqkNuORYccozCVVpopdvaAR0XD1ptL2B'
+const token = 'EAAH20DjZBlJABAJgobmjxDhjvj0FqFE40wBqGeUC1gUZCSpiol0gr2BaNNyQWj9izsK8SZBZBcZBCL0FrqXgxXVmPtl8ILCRISAfPDpZB1lVj1jbhedAgwAoakZCZCU1bSiiWZCDUjqqZCbgHBWGFzo8mZCNAQBAW3SiWhzQGzoNWZCz7uRG3Hpu8huicjJURCrakyllmiCaufZBGRSW1XGIcgYIy'
 
 export const apiSendMessage = async (dataMessage: any): Promise<ResGeneralApi> => {
     const config: AxiosRequestConfig = {
