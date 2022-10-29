@@ -17,6 +17,7 @@ import { initialState, useChatState } from '@store/chats/chatsContext';
 import CardInfoModule from '@components/admin/chats/CardInfoModule';
 import { useModuleState } from '@store/modulesFlows/ModulesContext';
 import { ChatBotModel } from '@models/chat-bot.model';
+import { NewCardChat } from '@components/admin/chats/NewCardChat';
 
 
 
@@ -50,9 +51,15 @@ const chatsPage = () => {
         <React.Fragment>
             <CssBaseline />
 
-            <CardInfoModule></CardInfoModule>
+            <Grid container direction="row" justifyContent="center" spacing={2}>
+                <Grid item p={2} sm={10} >
+                    <CardInfoModule></CardInfoModule>
+                </Grid>
+                <Grid item p={2} sm={2}>
+                    <NewCardChat></NewCardChat>
+                </Grid>
 
-
+            </Grid>
             <Grid container direction="row" justifyContent="center" spacing={2}>
                 {stateChat.filter.map(item => {
                     return (

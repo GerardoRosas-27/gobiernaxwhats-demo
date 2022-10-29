@@ -21,6 +21,11 @@ export const catalogTypeChat: CatalogTypeChat[] = [
 export const catalogTypeChatInteractive: CatalogTypeChat[] = [
     { _id: '0', key: 'buttons', value: 'Botones' },
     { _id: '1', key: 'secction', value: 'Secciones con Botones' },
+    { _id: '2', key: 'text', value: 'Texto' },
+    { _id: '3', key: 'image', value: 'Imagen' },
+    { _id: '4', key: 'document', value: 'Documento' },
+    { _id: '5', key: 'video', value: 'video' },
+    { _id: '6', key: 'location', value: 'Ubicación' }
 ]
 
 

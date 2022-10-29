@@ -62,10 +62,12 @@ const reducer: Reducer<IChatState, Actions> = (state, action): IChatState => {
             }
         }
         case "ADD_CHAT": {
-            const dataChat = [...state.list, { ...action.payload.data, id: uuid() }];
+            const dataChat = [...state.list, { ...action.payload.data }];
+            const filterDataChat = [...state.filter, { ...action.payload.data }];
             return {
                 ...state,
-                list: dataChat
+                list: dataChat,
+                filter: filterDataChat
             }
         }
         case "SELECT_CHAT": {

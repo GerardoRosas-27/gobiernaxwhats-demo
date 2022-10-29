@@ -18,3 +18,26 @@ export async function getModules(): Promise<ModulesBotModel[]> {
     connet.disconnect();
     return response
 }
+export async function getModule(key: string): Promise<ModulesBotModel[]> {
+    let connet = await connection();
+    let response = await DataModulesBot.find({ _id: key });
+    connet.disconnect();
+    return response
+}
+export async function putModule(id: string, data: ModulesBotModel): Promise<ModulesBotModel | null> {
+    let connet = await connection();
+    let response = await DataModulesBot.updateOne({ _id: id }, data).exec();
+    connet.disconnect();
+    if (response.modifiedCount === 1) {
+        return { _id: id, ...data }
+    } else {
+        return null
+    }
+}
+
+export async function deleteModule(id: string): Promise<ModulesBotModel> {
+    let connet = await connection();
+    let response = await DataModulesBot.findByIdAndRemove(id).exec();
+    connet.disconnect();
+    return response;
+}
